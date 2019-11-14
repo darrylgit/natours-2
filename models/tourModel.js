@@ -54,7 +54,11 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
       select: false
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     toJSON: { virtuals: true },
@@ -83,6 +87,20 @@ tourSchema.post('save', function(doc, next) {
   next();
 });
 */
+
+// QUERY MIDDLEWARE
+tourSchema.pre(/^find/, function(next) {
+  this.find({ secretTour: { $ne: true } });
+  next();
+});
+
+// AGGREGATION MIDDLEWARE
+tourSchema.pre('aggregate', function(next) {
+  //this._pipeline.unshift({ $match: { secretTour: { $ne: true } } });
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+
+  next();
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
