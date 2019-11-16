@@ -1,9 +1,16 @@
 /* eslint-disable no-console */
+const mongoose = require('mongoose');
 // eslint-disable-next-line import/newline-after-import
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
-const mongoose = require('mongoose');
+process.on('uncaughtException', err => {
+  console.log(err.name, err.message);
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+
+  process.exit(1);
+});
+
 const app = require('./app');
 
 const DB = process.env.DATABASE.replace(
