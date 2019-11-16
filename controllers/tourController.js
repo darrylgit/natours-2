@@ -1,7 +1,7 @@
 const Tour = require('./../models/tourModel');
-const APIFeatures = require('../utilities/apiFeatures');
-const catchAsync = require('../utilities/catchAysnc');
-const AppError = require('../utilities/appError');
+const APIFeatures = require('./../utilities/apiFeatures');
+const catchAsync = require('./../utilities/catchAysnc');
+const AppError = require('./../utilities/appError');
 
 /*
 const tours = JSON.parse(
