@@ -19,8 +19,6 @@ exports.aliasTopTours = (req, res, next) => {
 
 // HANDLERS
 exports.getAllTours = catchAsync(async (req, res, next) => {
-  console.log(req.query);
-
   // EXECUTE QUERY
   const features = new APIFeatures(Tour.find(), req.query)
     .filter()
