@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utilities/catchAysnc');
@@ -14,7 +15,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    confirmPassword: req.body.confirmPassword
+    confirmPassword: req.body.confirmPassword,
+    passwordChangedAt: req.body.passwordChangedAt
   });
 
   const token = signToken(newUser._id);
@@ -61,7 +63,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log(token);
 
   if (!token) {
     return next(
@@ -69,10 +70,24 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   // 2) Verify token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3) Check if user still exists
+  const foundUser = await User.findById(decoded.id);
+  if (!foundUser) {
+    return next(
+      new AppError('The user associated with this token no longer exists.', 401)
+    );
+  }
 
   // 4) Check if user changed password after the token was issued
+  if (foundUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password. Please log in again', 401)
+    );
+  }
 
+  // GRANT ACCESS TO PROTECTED ROUTE
+  req.user = foundUser;
   next();
 });
