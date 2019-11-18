@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const AppError = require('./../utilities/appError');
 
 const handleCastErrorDB = err => {
