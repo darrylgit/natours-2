@@ -153,13 +153,20 @@ tourSchema.post('save', function(doc, next) {
 
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt'
+  });
+  next();
+});
+
+tourSchema.pre(/^find/, function(next) {
   this.find({ secretTour: { $ne: true } });
   next();
 });
 
 // AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function(next) {
-  //this._pipeline.unshift({ $match: { secretTour: { $ne: true } } });
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
 
   next();
