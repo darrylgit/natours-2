@@ -2,12 +2,7 @@ const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utilities/apiFeatures');
 const catchAsync = require('./../utilities/catchAysnc');
 const AppError = require('./../utilities/appError');
-
-/*
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
-*/
+const factory = require('./handlerFactory');
 
 // MIDDLEWARE
 exports.aliasTopTours = (req, res, next) => {
@@ -73,18 +68,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-
-  if (!tour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null
-  });
-});
+exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
@@ -156,3 +140,24 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     data: { plan }
   });
 });
+
+/*
+exports.deleteTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findByIdAndDelete(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No tour found with that ID', 404));
+  }
+
+  res.status(204).json({
+    status: 'success',
+    data: null
+  });
+});
+*/
+
+/*
+const tours = JSON.parse(
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
+);
+*/
