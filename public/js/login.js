@@ -2,7 +2,12 @@
 import axios from 'axios';
 import { showAlert } from './alerts';
 
+<<<<<<< HEAD
 export const login = async (email, password) => {
+=======
+const login = async (email, password) => {
+  console.log(email, password);
+>>>>>>> parent of 680ba43... Toggle header based on login status
   try {
     const res = await axios({
       method: 'POST',
@@ -12,6 +17,7 @@ export const login = async (email, password) => {
         password
       }
     });
+<<<<<<< HEAD
 
     if (res.data.status === 'success') {
       showAlert('success', 'Logged in successfully!');
@@ -21,6 +27,11 @@ export const login = async (email, password) => {
     }
   } catch (err) {
     showAlert('error', err.response.data.message);
+=======
+    console.log(res);
+  } catch (err) {
+    console.log(err.response.data);
+>>>>>>> parent of 680ba43... Toggle header based on login status
   }
 };
 
