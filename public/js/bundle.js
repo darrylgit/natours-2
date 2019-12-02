@@ -8752,7 +8752,7 @@ var loginForm = document.querySelector('.form');
 var logOutBtn = document.querySelector('.nav__el--logout'); // DELEGATION
 
 if (mapBox) {
-  var locations = JSON.parse(mapbox.dataset.locations);
+  var locations = JSON.parse(mapBox.dataset.locations);
   (0, _mapbox.displayMap)(locations);
 }
 
