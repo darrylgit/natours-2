@@ -8485,7 +8485,7 @@ exports.logout = logout;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateMe = void 0;
+exports.updateSettings = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -8494,49 +8494,48 @@ var _alerts = require("./alerts");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* eslint-disable */
-var updateMe = function updateMe(name, email) {
-  var res;
-  return regeneratorRuntime.async(function updateMe$(_context) {
+// type is either 'password' or 'data'
+var updateSettings = function updateSettings(data, type) {
+  var url, res;
+  return regeneratorRuntime.async(function updateSettings$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          _context.next = 3;
+          url = type === 'password' ? 'http://127.0.0.01:3000/api/v1/users/updatePassword' : 'http://127.0.0.01:3000/api/v1/users/updateMe';
+          _context.next = 4;
           return regeneratorRuntime.awrap((0, _axios.default)({
             method: 'PATCH',
-            url: 'http://127.0.0.01:3000/api/v1/users/updateMe',
-            data: {
-              name: name,
-              email: email
-            }
+            url: url,
+            data: data
           }));
 
-        case 3:
+        case 4:
           res = _context.sent;
 
           if (res.data.status === 'success') {
-            (0, _alerts.showAlert)('success', 'User data updated!');
+            (0, _alerts.showAlert)('success', "".concat(type.toUpperCase(), " updated!"));
           }
 
           console.log(res);
           console.log('asfasdf');
-          _context.next = 12;
+          _context.next = 13;
           break;
 
-        case 9:
-          _context.prev = 9;
+        case 10:
+          _context.prev = 10;
           _context.t0 = _context["catch"](0);
           (0, _alerts.showAlert)('error', _context.t0.response.data.message);
 
-        case 12:
+        case 13:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 9]]);
+  }, null, null, [[0, 10]]);
 };
 
-exports.updateMe = updateMe;
+exports.updateSettings = updateSettings;
 },{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -8810,7 +8809,8 @@ var _updateSettings = require("./updateSettings");
 var mapBox = document.getElementById('map');
 var loginForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout');
-var userDataForm = document.querySelector('.form-user-data'); // DELEGATION
+var userDataForm = document.querySelector('.form-user-data');
+var userPasswordForm = document.querySelector('.form-user-password'); // DELEGATION
 
 if (mapBox) {
   var locations = JSON.parse(mapBox.dataset.locations);
@@ -8832,7 +8832,44 @@ if (userDataForm) {
     e.preventDefault();
     var name = document.getElementById('name').value;
     var email = document.getElementById('email').value;
-    (0, _updateSettings.updateMe)(name, email);
+    (0, _updateSettings.updateSettings)({
+      name: name,
+      email: email
+    }, 'data');
+  });
+}
+
+if (userPasswordForm) {
+  userPasswordForm.addEventListener('submit', function _callee(e) {
+    var passwordCurrent, newPassword, confirmNewPassword;
+    return regeneratorRuntime.async(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            e.preventDefault();
+            document.querySelector('.btn--save-password').textContent = 'Updating...';
+            passwordCurrent = document.getElementById('password-current').value;
+            newPassword = document.getElementById('password').value;
+            confirmNewPassword = document.getElementById('password-confirm').value;
+            _context.next = 7;
+            return regeneratorRuntime.awrap((0, _updateSettings.updateSettings)({
+              passwordCurrent: passwordCurrent,
+              newPassword: newPassword,
+              confirmNewPassword: confirmNewPassword
+            }, 'password'));
+
+          case 7:
+            document.querySelector('.btn--save-password').textContent = 'Save password';
+            document.getElementById('password-current').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('password-confirm').value = '';
+
+          case 11:
+          case "end":
+            return _context.stop();
+        }
+      }
+    });
   });
 }
 
@@ -8867,7 +8904,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "43469" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "39441" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
